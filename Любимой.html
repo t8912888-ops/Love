@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8"> 
+    < meta  name="viewport"  content="width=device-width,  initial-scale=1.0"> 
+    <title>Приглашение на свидание</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fff0f5 0%, #ffe4e8 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 182, 193, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 105, 180, 0.15) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .page {
+            display: none;
+            max-width: 800px;
+            margin: 40px auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            box-shadow: 0 15px 50px rgba(255, 182, 193, 0.3);
+            padding: 50px 40px;
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 182, 193, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #ff69b4, #ffb6c1, #ff1493);
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.8em;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            padding-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 3px;
+            background: linear-gradient(90deg, #ff69b4, #ff1493);
+            border-radius: 2px;
+        }
+
+        .heart-container {
+            position: relative;
+            margin: 30px auto;
+            width: 100px;
+            height: 100px;
+        }
+
+        .heart {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            clip-path: polygon(50% 0%, 100% 35%, 82% 100%, 50% 65%, 18% 100%, 0% 35%);
+            animation: heartbeat 1.8s infinite;
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.4);
+        }
+
+        .heart i {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            color: white;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.05); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.03); }
+        }
+
+        .invitation-text {
+            font-size: 1.2em;
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            padding: 0 20px;
+            font-weight: 400;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            color: white;
+            border: none;
+            padding:想说px 45px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.4s;
+            font-weight: 600;
+            margin: 15px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #ff69b4;
+            color: #ff69b4;
+        }
+
+        /* Календарь */
+        .calendar-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 40px 0;
+            box-shadow: 0 10px 30px rgba(255, 182, 193, 0.15);
+            border: 1px solid #ffe4e8;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ffe4e8;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+
+        .calendar-day {
+            font-weight: 600;
+            color: #ff69b4;
+            padding: 15px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .date-cell {
+            padding: 16px 8px;
+            border: 2px solid #ffe4e8;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            position: relative;
+        }
+
+        .date-cell:hover {
+            border-color: #ff69b4;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.2);
+        }
+
+        .date-cell.selected {
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            color: white;
+            border-color: #ff69b4;
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.3);
+        }
+
+        .date-cell .day-number {
+            font-size: 1.3em;
+            font-weight: 700;
+        }
+
+        .date-cell .day-name {
+            font-size: 0.85em;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        /* Время */
+        .time-container {
+            margin: 40px 0;
+        }
+
+        .time-slots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .time-slot {
+            padding: 14px 24px;
+            border: 2px solid #ffe4e8;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            font-weight: 600;
+            min-width: 95px;
+            font-size: 0.95em;
+        }
+
+        .time-slot:hover {
+            border-color: #ff69b4;
+            background: #fff0f5;
+            transform: translateY(-3px);
+        }
+
+        .time-slot.selected {
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            color: white;
+            border-color: #ff69b4;
+            box-shadow: 0 8px 20px rgba(255, 105, 180, 0.3);
+        }
+
+        /* Карточки мест */
+        .places-section {
+            background: linear-gradient(135deg, #fff5f7 0%, #fff0f5 100%);
+            border-radius: 25px;
+            padding: 40px 30px;
+            margin: 40px 0;
+            box-shadow: 0 14px 40px rgba(255, 182, 193, 0.2);
+            border: 2px solid rgba(255, 182, 193, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .places-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #ff69b4, #ffb6c1, #ff1493);
+        }
+
+        .places-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .place-card {
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.4s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            background: white;
+            padding: 30px;
+            border: 2px solid #ffe4e8;
+            text-align: center;
+        }
+
+        .place-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(255, 105, 180, 0.25);
+            border-color: #ff69b4;
+        }
+
+        .place-info h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+            font-weight: 700;
+        }
+
+        .place-info p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .feature-tag {
+            background: #fff0f5;
+            color: #ff69b4;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            border: 1px solid #ffb6c1;
+            display: inline-block;
+        }
+
+        /* Карточки еды */
+        .food-container {
+            margin: 40px 0;
+        }
+
+        .food-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .food-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #ffe4e8;
+            text-align: center;
+            position: relative;
+        }
+
+        .food-card:hover {
+            border-color: #ff69b4;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 105, 180, 0.1);
+        }
+
+        .food-icon {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            display: block;
+            color: #ff69b4;
+        }
+
+        .food-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        /* Подтверждение и скачивание */
+        .confirmation-container {
+            background: linear-gradient(135deg, #fff0f5 0%, #fff5f7 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            border: 2px dashed #ff69b4;
+        }
+
+        .detail-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+            border-left: 4px solid #ff69b4;
+        }
+
+        .detail-card:hover {
+            transform: translateX(10px);
+        }
+
+        .detail-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.3em;
+            flex-shrink: 0;
+        }
+
+        .detail-content h3 {
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .detail-content p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        /* Кнопки скачивания */
+        .download-section {
+            margin: 50px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #fff0f5 0%, #fff5f7 100%);
+            border-radius: 20px;
+            border: 2px solid #ff69b4;
+        }
+
+        .download-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .download-btn {
+            padding: 16px 32px;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 190px;
+            justify-content: center;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(255, 105, 180, 0.2);
+        }
+
+        /* Навигация */
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        /* Прогресс бар */
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: #ffe4e8;
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff69b4, #ff1493);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            width: 0%;
+        }
+
+        /* Сообщения об ошибке */
+        .error-message {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: none;
+            animation: shake 0.5s ease;
+            font-size: 0.95em;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        /* Пользовательский ввод */
+        .custom-input-container {
+            margin-top: 30px;
+            padding: 25px;
+            background: #fff0f5;
+            border-radius: 16px;
+            border-left: 4px solid #ff69b4;
+        }
+
+        .custom-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #ffb6c1;
+            border-radius: 12px;
+            font-size: 1em;
+            transition: all 0.3s;
+            margin-top: 15px;
+            background: white;
+        }
+
+        .custom-input:focus {
+            outline: none;
+            border-color: #ff69b4;
+            box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.1);
+        }
+
+        /* Стили для превью скачивания */
+        .download-preview {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            margin: 40px auto;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+            border: 1px solid #ffe4e8;
+        }
+
+        .download-preview::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #ff69b4, #ff1493);
+        }
+
+        .preview-heart {
+            font-size: 50px;
+            color: #ff69b4;
+            margin: 20px 0;
+            animation: heartbeat 2s infinite;
+        }
+
+        .preview-title {
+            font-size: 2em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .preview-details {
+            text-align: left;
+            margin: 30px 0;
+            padding: 25px;
+            background: #fff0f5;
+            border-radius: 15px;
+        }
+
+        .preview-detail {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ffe4e8;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .preview-detail:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .preview-detail i {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .preview-footer {
+            margin-top: 30px;
+            color: #666;
+            font-size: 1em;
+            line-height: 1.6;
+        }
+
+        /* Декоративные элементы */
+        .petals {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .petal {
+            position: absolute;
+            background: #ff69b4;
+            border-radius: 50% 50% 50% 0;
+            animation: fall linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        /* Красивые карточки на главной */
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 25px 0;
+            box-shadow: 0 10px 30px rgba(255, 182, 193, 0.15);
+            border: 1px solid #ffe4e8;
+            text-align: left;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(255, 182, 193, 0.25);
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: white;
+            font-size: 1.8em;
+        }
+
+        .feature-content h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.4em;
+            font-weight: 600;
+        }
+
+        .feature-content p {
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Декоративные лепестки -->
+    <div class="petals" id="petals"></div>
+
+    <!-- Страница 1: Главная -->
+    <div id="page1" class="page active">
+        <div class="heart-container">
+            <div class="heart"></div>
+        </div>
+        
+        <h1>Ваше особенное приглашение</h1>
+        
+        <p class="invitation-text">
+            Привет, моя любимая!<br>
+            Я приготовил для тебя небольшое волшебство. Давай вместе создадим идеальный день, 
+            который запомнится нам надолго. Выбери всё, что тебе по душе!
+        </p>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="far fa-calendar-alt"></i>
+            </div>
+            <div class="feature-content">
+                <h3>Выбери идеальную дату</h3>
+                <p>Подбери удобное время для нашей встречи. Можно выбрать любой день из ближайших двух недель.</p>
+            </div>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="feature-content">
+                <h3>Определи место встречи</h3>
+                <p>Выбери место, где тебе будет максимально комфортно и интересно провести время.</p>
+            </div>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-utensils"></i>
+            </div>
+            <div class="feature-content">
+                <h3>Подбери угощения</h3>
+                <p>Выбери любимые лакомства или предложи свои варианты. Можно выбрать несколько!</p>
+            </div>
+        </div>
+        
+        <div class="feature-card">
+            <div class="feature-icon">
+                <i class="fas fa-download"></i>
+            </div>
+            <div class="feature-content">
+                <h3>Сохрани результат</h3>
+                <p>Скачай красивое приглашение как картинку и сохрани детали нашей встречи.</p>
+            </div>
+        </div>
+        
+        <button onclick="showPage(2)" class="btn">
+            <i class="fas fa-play-circle"></i> Начать планирование
+        </button>
+    </div>
+
+    <!-- Страница 2: Дата и время -->
+    <div id="page2" class="page">
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar" style="width: 25%;"></div>
+        </div>
+        
+        <h1><i class="far fa-calendar-alt"></i> Выбери дату и время</h1>
+        
+        <div class="error-message" id="dateError">
+            <i class="fas fa-exclamation-circle"></i> Пожалуйста, выбери дату и время!
+        </div>
+        
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <h2 style="color: #333;">Календарь</h2>
+                <div style="color: #ff69b4; font-weight: 600;">
+                    <i class="far fa-clock"></i> Выбери удобный день
+                </div>
+            </div>
+            
+            <div class="calendar" id="calendar">
+                <!-- Даты появятся здесь -->
+            </div>
+        </div>
+        
+        <div class="time-container">
+            <h2 style="color: #333; margin-bottom: 30px;">
+                <i class="fas fa-clock"></i> Выбери время встречи
+            </h2>
+            
+            <div id="timeSlots" class="time-slots">
+                <!-- Время появятся здесь -->
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <button onclick="showPage(1)" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Назад
+            </button>
+            <button onclick="validateDate()" class="btn">
+                Далее <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Страница 3: Маршрут -->
+    <div id="page3" class="page">
+        <div class="progress-container">
+            <div class="progress-bar" style="width: 50%;"></div>
+        </div>
+        
+        <h1><i class="fas fa-map-marker-alt"></i> Куда пойдём?</h1>
+        
+        <div class="places-section">
+            <div class="places-grid">
+                <button onclick="chooseRoute('Набережная')" class="place-card">
+                    <div class="place-info">
+                        <h3>Набережная</h3>
+                        <p>Романтичная прогулка вдоль реки с красивыми видами</p>
+                        <div class="feature-tag">Романтика</div>
+                    </div>
+                </button>
+                
+                <button onclick="chooseRoute('Парк Пушкина')" class="place-card">
+                    <div class="place-info">
+                        <h3>Парк Пушкина</h3>
+                        <p>Уютный парк с аллеями и скамейками для спокойного отдыха</p>
+                        <div class="feature-tag">Уют</div>
+                    </div>
+                </button>
+                
+                <button onclick="showCustomRoute('На мой вкус')" class="place-card">
+                    <div class="place-info">
+                        <h3>На мой вкус</h3>
+                        <p>Я всё организую сам, будет сюрприз!</p>
+                        <div class="feature-tag">Сюрприз</div>
+                    </div>
+                </button>
+                
+                <button onclick="showCustomRoute('Свой вариант')" class="place-card">
+                    <div class="place-info">
+                        <h3>Свой вариант</h3>
+                        <p>Предложи своё место для встречи</p>
+                        <div class="feature-tag">Твой выбор</div>
+                    </div>
+                </button>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <button onclick="showPage(2)" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Назад
+            </button>
+        </div>
+    </div>
+
+    <!-- Страница 3.1: ввод собственного маршрута -->
+    <div id="customRoutePage" class="page">
+        <div class="progress-container">
+            <div class="progress-bar" style="width: 50%;"></div>
+        </div>
+        
+        <h1><i class="fas fa-route"></i> Твой маршрут</h1>
+        
+        <div class="custom-input-container">
+            <div id="customRouteMessage" class="invitation-text" style="text-align: center; margin-bottom: 30px;">
+                <!-- Сообщение будет заполнено динамически -->
+            </div>
+            
+            <input type="text" id="customRouteInput" class="custom-input" placeholder="Введите свой маршрут или пожелания">
+            
+            <div class="navigation" style="margin-top: 40px;">
+                <button onclick="showPage(3)" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Назад
+                </button>
+                <button onclick="setCustomRoute()" class="btn">
+                    Готово <i class="fas fa-check"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница 4: еда и напитки -->
+    <div id="page4" class="page">
+        <div class="progress-container">
+            <div class="progress-bar" style="width: 75%;"></div>
+        </div>
+        
+        <h1><i class="fas fa-utensils"></i> Что будем есть и пить?</h1>
+        
+        <div class="food-container">
+            <div class="food-grid">
+                <button onclick="eatChoice('На свой вкус')" class="food-card">
+                    <div class="food-icon">
+                        <i class="fas fa-user-edit"></i>
+                    </div>
+                    <div class="food-name">На свой вкус</div>
+                    <p style="color: #666; margin-top: 10px;">Опиши, что хочешь съесть и выпить</p>
+                </button>
+                
+                <button onclick="eatChoice('На мой вкус')" class="food-card">
+                    <div class="food-icon">
+                        <i class="fas fa-surprise"></i>
+                    </div>
+                    <div class="food-name">На мой вкус</div>
+                    <p style="color: #666; margin-top: 10px;">Я всё организую сам, будет сюрприз!</p>
+                </button>
+                
+                <button onclick="generateRandom()" class="food-card">
+                    <div class="food-icon">
+                        <i class="fas fa-random"></i>
+                    </div>
+                    <div class="food-name">Рандом</div>
+                    <p style="color: #666; margin-top: 10px;">Случайный выбор: напиток, мороженое, "Киндер"</p>
+                </button>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <button onclick="showPage(3)" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Назад
+            </button>
+        </div>
+    </div>
+
+    <!-- Страница 4.1: пожелания по еде -->
+    <div id="foodInputPage" class="page">
+        <div class="progress-container">
+            <div class="progress-bar" style="width: 75%;"></div>
+        </div>
+        
+        <h1><i class="fas fa-edit"></i> Твои пожелания</h1>
+        
+        <div class="custom-input-container">
+            <p class="invitation-text" style="text-align: center; margin-bottom: 30px;">
+                Опиши, что хочешь есть и пить на нашей встрече
+            </p>
+            
+            <input type="text" id="foodInput" class="custom-input" placeholder="Например: пицца, кофе, шоколад">
+            
+            <div class="navigation" style="margin-top: 40px;">
+                <button onclick="showPage(4)" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Назад
+                </button>
+                <button onclick="setFood()" class="btn">
+                    Готово <i class="fas fa-check"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница 5: Подтверждение и скачивание -->
+    <div id="page5" class="page">
+        <div class="progress-container">
+            <div class="progress-bar" style="width: 100%;"></div>
+        </div>
+        
+        <div class="heart-container">
+            <div class="heart" style="animation: heartbeat 2s infinite;"></div>
+        </div>
+        
+        <h1>Готово!</h1>
+        
+        <p class="invitation-text">
+            Ура! Ты создала идеальное свидание. Вот все детали нашей встречи:
+        </p>
+        
+        <div class="confirmation-container">
+            <div id="confirmationDetails">
+                <!-- Детали появятся здесь -->
+            </div>
+        </div>
+        
+        <div class="download-section">
+            <h2><i class="fas fa-download"></i> Сохрани приглашение</h2>
+            <p style="color: #666; margin: 20px 0;">Ты можешь скачать приглашение как красивую картинку и отправить своему партнеру!</p>
+            
+            <div class="download-options">
+                <button onclick="downloadAsImage('png')" class="download-btn" style="background: linear-gradient(45deg, #ff69b4, #ff1493); color: white;">
+                    <i class="fas fa-image"></i> Скачать PNG
+                </button>
+                
+                <button onclick="downloadAsImage('jpg')" class="download-btn" style="background: linear-gradient(45deg, #d87093, #c71585); color: white;">
+                    <i class="fas fa-file-image"></i> Скачать JPG
+                </button>
+                
+                <button onclick="shareInvitation()" class="download-btn" style="background: linear-gradient(45deg, #ff69b4, #ff1493); color: white;">
+                    <i class="fas fa-share-alt"></i> Поделиться
+                </button>
+            </div>
+            
+            <div style="margin-top: 30px; color: #888; font-size: 0.9em;">
+                <i class="fas fa-info-circle"></i> Картинка сохранится в папку "Загрузки"
+            </div>
+        </div>
+        
+        <p class="invitation-text" style="margin-top: 40px;">
+            Я уже с нетерпением жду нашей встречи!<br>
+            Это будет незабываемый день, обещаю!
+        </p>
+        
+        <div class="navigation">
+            <button onclick="showPage(1)" class="btn btn-outline">
+                <i class="fas fa-redo"></i> Новое приглашение
+            </button>
+        </div>
+    </div>
+
+    <!-- Скрытый элемент для скачивания -->
+    <div id="downloadPreview" style="display: none;">
+        <div class="download-preview">
+            <div class="preview-heart">
+                <i class="fas fa-heart"></i>
+            </div>
+            <div class="preview-title">Приглашение на свидание</div>
+            
+            <div class="preview-details" id="previewDetails">
+                <!-- Детали для скачивания появятся здесь -->
+            </div>
+            
+            <div class="preview-footer">
+                Создано с любовью<br>
+                Жду нашей встречи!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Хранение данных
+        let selectionData = {
+            date: null,
+            time: null,
+            place: null,
+            customPlace: '',
+            foods: [],
+            customFood: ''
+        };
+
+        let currentRouteType = '';
+
+        // Создать декоративные лепестки
+        function createPetals() {
+            const container = document.getElementById('petals');
+            const colors = ['#ff69b4', '#ffb6c1', '#ff1493', '#db7093'];
+            
+            for (let i = 0; i < 15; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                petal.style.width = `${Math.random() * 20 + 10}px`;
+                petal.style.height = petal.style.width;
+                petal.style.left = `${Math.random() * 100}%`;
+                petal.style.background = colors[Math.floor(Math.random() * colors.length)];
+                petal.style.animationDuration = `${Math.random() * 10 + 10}s`;
+                petal.style.animationDelay = `${Math.random() * 5}s`;
+                container.appendChild(petal);
+            }
+        }
+
+        // Показ страниц
+        function showPage(pageNumber) {
+            // Скрыть все страницы
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Показать нужную страницу
+            if (typeof pageNumber === 'number') {
+                document.getElementById('page' + pageNumber).classList.add('active');
+            } else {
+                document.getElementById(pageNumber).classList.add('active');
+            }
+            
+            // Обновить прогресс бар
+            const progressBars = document.querySelectorAll('.progress-bar');
+            let progress = 0;
+            
+            if (pageNumber === 1) progress = 0;
+            else if (pageNumber === 2) progress = 25;
+            else if (pageNumber === 3 || pageNumber === 'customRoutePage') progress = 50;
+            else if (pageNumber === 4 || pageNumber === 'foodInputPage') progress = 75;
+            else if (pageNumber === 5) progress = 100;
+            
+            progressBars.forEach(bar => {
+                bar.style.width = `${progress}%`;
+            });
+            
+            // Инициализировать страницу при показе
+            if (pageNumber === 2) {
+                initDateSelection();
+            } else if (pageNumber === 5) {
+                showConfirmation();
+            }
+        }
+
+        // Инициализация выбора даты
+        function initDateSelection() {
+            const calendar = document.getElementById('calendar');
+            const timeSlots = document.getElementById('timeSlots');
+            
+            calendar.innerHTML = '';
+            timeSlots.innerHTML = '';
+            
+            // Дни недели
+            const daysOfWeek = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+            daysOfWeek.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                calendar.appendChild(dayElement);
+            });
+            
+            // Текущая дата
+            const today = new Date();
+            const currentMonth = today.getMonth();
+            const currentYear = today.getFullYear();
+            
+            // Последний день месяца
+            const lastDay = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            // Создаем календарь (с завтрашнего дня)
+            for (let day = today.getDate() + 1; day <= lastDay && day <= today.getDate() + 14; day++) {
+                const date = new Date(currentYear, currentMonth, day);
+                const dateCell = document.createElement('div');
+                dateCell.className = 'date-cell';
+                dateCell.dataset.date = date.toISOString().split('T')[0];
+                
+                const dayName = date.toLocaleDateString('ru-RU', { weekday: 'short' });
+                dateCell.innerHTML = `
+                    <div class="day-number">${day}</div>
+                    <div class="day-name">${dayName}</div>
+                `;
+                
+                dateCell.addEventListener('click', function() {
+                    document.querySelectorAll('.date-cell').forEach(cell => {
+                        cell.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    selectionData.date = this.dataset.date;
+                });
+                
+                calendar.appendChild(dateCell);
+            }
+            
+            // Создаем временные слоты
+            const times = ['14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'];
+            times.forEach(time => {
+                const timeSlot = document.createElement('div');
+                timeSlot.className = 'time-slot';
+                timeSlot.textContent = time;
+                timeSlot.dataset.time = time;
+                
+                timeSlot.addEventListener('click', function() {
+                    document.querySelectorAll('.time-slot').forEach(slot => {
+                        slot.classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    selectionData.time = this.dataset.time;
+                });
+                
+                timeSlots.appendChild(timeSlot);
+            });
+        }
+
+        // Валидация даты
+        function validateDate() {
+            if (!selectionData.date || !selectionData.time) {
+                document.getElementById('dateError').style.display = 'block';
+                return;
+            }
+            document.getElementById('dateError').style.display = 'none';
+            showPage(3);
+        }
+
+        // Выбор маршрута
+        function chooseRoute(route) {
+            if (route === 'Набережная' || route === 'Парк Пушкина') {
+                selectionData.place = route;
+                selectionData.customPlace = '';
+                showPage(4);
+            }
+        }
+
+        // Показать страницу для ввода маршрута
+        function showCustomRoute(type) {
+            currentRouteType = type;
+            const messageDiv = document.getElementById('customRouteMessage');
+            const inputField = document.getElementById('customRouteInput');
+            
+            if (type === 'На мой вкус') {
+                messageDiv.innerHTML = `
+                    <div style="margin-bottom: 20px;">
+                        <i class="fas fa-heart" style="color: #ff69b4; font-size: 2em; margin-bottom: 15px;"></i>
+                        <h3 style="color: #333; margin-bottom: 15px;">Кисунь, хочу, чтобы это было незабываемое для тебя свидание, так что выбирай сама</h3>
+                        <p style="color: #666;">Опиши, куда бы ты хотела пойти или что хочешь увидеть</p>
+                    </div>
+                `;
+                inputField.placeholder = "Введи свои пожелания для маршрута...";
+            } else {
+                messageDiv.innerHTML = `
+                    <div style="margin-bottom: 20px;">
+                        <i class="fas fa-lightbulb" style="color: #ff69b4; font-size: 2em; margin-bottom: 15px;"></i>
+                        <h3 style="color: #333; margin-bottom: 15px;">Твой вариант маршрута</h3>
+                        <p style="color: #666;">Предложи своё идеальное место для встречи</p>
+                    </div>
+                `;
+                inputField.placeholder = "Например: кафе 'Уютное', кинотеатр, выставка...";
+            }
+            
+            // Очистить поле ввода
+            inputField.value = '';
+            showPage('customRoutePage');
+        }
+
+        // Установить пользовательский маршрут
+        function setCustomRoute() {
+            const inputValue = document.getElementById('customRouteInput').value.trim();
+            
+            if (!inputValue) {
+                alert('Пожалуйста, введи свой вариант маршрута');
+                return;
+            }
+            
+            if (currentRouteType === 'На мой вкус') {
+                selectionData.place = 'На мой вкус';
+                selectionData.customPlace = inputValue;
+            } else {
+                selectionData.place = 'Свой вариант';
+                selectionData.customPlace = inputValue;
+            }
+            
+            showPage(4);
+        }
+
+        // Выбор еды
+        function eatChoice(choice) {
+            if (choice === 'На свой вкус') {
+                showPage('foodInputPage');
+            } else if (choice === 'На мой вкус') {
+                selectionData.foods = ['На мой вкус'];
+                selectionData.customFood = 'Я всё организую';
+                showPage(5);
+            }
+        }
+
+        // Генерация случайной еды
+        function generateRandom() {
+            const randomFoods = ['Напиток', 'Мороженое', 'Киндер'];
+            selectionData.foods = randomFoods;
+            selectionData.customFood = '';
+            
+            // Показываем результат рандома
+            alert(`🎲 Рандом выбрал: ${randomFoods.join(', ')}`);
+            
+            // Переход на следующую страницу
+            setTimeout(() => {
+                showPage(5);
+            }, 1000);
+        }
+
+        // Установить пользовательскую еду
+        function setFood() {
+            const foodValue = document.getElementById('foodInput').value.trim();
+            
+            if (!foodValue) {
+                alert('Пожалуйста, опиши свои пожелания по еде');
+                return;
+            }
+            
+            selectionData.foods = ['На свой вкус'];
+            selectionData.customFood = foodValue;
+            showPage(5);
+        }
+
+        // Показать подтверждение
+        function showConfirmation() {
+            const detailsDiv = document.getElementById('confirmationDetails');
+            const previewDiv = document.getElementById('previewDetails');
+            
+            // Форматирование даты
+            const dateObj = new Date(selectionData.date);
+            const formattedDate = dateObj.toLocaleDateString('ru-RU', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            // Название места
+            let placeName = '';
+            if (selectionData.place === 'Набережная' || selectionData.place === 'Парк Пушкина') {
+                placeName = selectionData.place;
+            } else if (selectionData.customPlace) {
+                placeName = selectionData.customPlace;
+            }
+            
+            // Формирование списка еды
+            let foodsList = '';
+            if (selectionData.foods.includes('На мой вкус')) {
+                foodsList = 'На мой вкус (я всё организую)';
+            } else if (selectionData.foods.includes('На свой вкус') && selectionData.customFood) {
+                foodsList = selectionData.customFood;
+            } else if (selectionData.foods.length > 0) {
+                foodsList = selectionData.foods.join(', ');
+            }
+            
+            // Для страницы подтверждения
+            detailsDiv.innerHTML = `
+                <div class="detail-card">
+                    <div class="detail-icon">
+                        <i class="far fa-calendar-alt"></i>
+                    </div>
+                    <div class="detail-content">
+                        <h3>Дата и время</h3>
+                        <p>${formattedDate} в ${selectionData.time}</p>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <div class="detail-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="detail-content">
+                        <h3>Место встречи</h3>
+                        <p>${placeName}</p>
+                    </div>
+                </div>
+                
+                <div class="detail-card">
+                    <div class="detail-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <div class="detail-content">
+                        <h3>Угощения</h3>
+                        <p>${foodsList || 'Будет сюрприз!'}</p>
+                    </div>
+                </div>
+            `;
+            
+            // Для превью скачивания
+            previewDiv.innerHTML = `
+                <div class="preview-detail">
+                    <i class="far fa-calendar-alt"></i>
+                    <div>
+                        <strong>Дата и время:</strong><br>
+                        ${formattedDate} в ${selectionData.time}
+                    </div>
+                </div>
+                
+                <div class="preview-detail">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <strong>Место встречи:</strong><br>
+                        ${placeName}
+                    </div>
+                </div>
+                
+                <div class="preview-detail">
+                    <i class="fas fa-utensils"></i>
+                    <div>
+                        <strong>Угощения:</strong><br>
+                        ${foodsList || 'Будет сюрприз!'}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Скачать как изображение
+        function downloadAsImage(format) {
+            const preview = document.getElementById('downloadPreview');
+            
+            // Убедимся, что превью содержит актуальные данные
+            showConfirmation();
+            
+            // Показать превью временно для скриншота
+            preview.style.display = 'block';
+            
+            // Ждем мгновение, чтобы DOM обновился
+            setTimeout(() => {
+                html2canvas(preview, {
+                    backgroundColor: '#fff0f5',
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    allowTaint: true
+                }).then(canvas => {
+                    // Скрыть превью обратно
+                    preview.style.display = 'none';
+                    
+                    // Создать ссылку для скачивания
+                    const link = document.createElement('a');
+                    const filename = `Приглашение_на_свидание_${new Date().getTime()}.${format}`;
+                    
+                    if (format === 'png') {
+                        link.href = canvas.toDataURL('image/png');
+                    } else {
+                        link.href = canvas.toDataURL('image/jpeg', 0.95);
+                    }
+                    
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    // Показать сообщение об успехе
+                    alert(`Приглашение успешно скачано как ${filename}!`);
+                }).catch(error => {
+                    preview.style.display = 'none';
+                    console.error('Ошибка при создании изображения:', error);
+                    alert('Произошла ошибка при создании изображения. Попробуйте еще раз.');
+                });
+            }, 100);
+        }
+
+        // Поделиться приглашением
+        function shareInvitation() {
+            const dateObj = new Date(selectionData.date);
+            const formattedDate = dateObj.toLocaleDateString('ru-RU', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            let placeName = '';
+            if (selectionData.place === 'Набережная' || selectionData.place === 'Парк Пушкина') {
+                placeName = selectionData.place;
+            } else if (selectionData.customPlace) {
+                placeName = selectionData.customPlace;
+            }
+            
+            let foodsList = '';
+            if (selectionData.foods.includes('На мой вкус')) {
+                foodsList = 'На мой вкус (я всё организую)';
+            } else if (selectionData.foods.includes('На свой вкус') && selectionData.customFood) {
+                foodsList = selectionData.customFood;
+            } else if (selectionData.foods.length > 0) {
+                foodsList = selectionData.foods.join(', ');
+            }
+            
+            const shareText = `🎉 Приглашение на свидание!\n\n📅 Дата: ${formattedDate} в ${selectionData.time}\n📍 Место: ${placeName}\n🍽️ Угощения: ${foodsList || 'Сюрприз!'}\n\n💖 Создано с любовью!`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Приглашение на свидание!',
+                    text: shareText,
+                    url: window.location.href
+                }).catch(error => {
+                    console.log('Ошибка при использовании Web Share API:', error);
+                    fallbackShare(shareText);
+                });
+            } else {
+                fallbackShare(shareText);
+            }
+        }
+
+        // Фолбэк для браузеров без Web Share API
+        function fallbackShare(text) {
+            // Создаем временный элемент для копирования
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    alert('Текст приглашения скопирован в буфер обмена! Можешь отправить его в любом мессенджере.');
+                } else {
+                    alert('Скопируйте текст вручную:\n\n' + text);
+                }
+            } catch (err) {
+                alert('Скопируйте текст вручную:\n\n' + text);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            createPetals();
+        });
+    </script>
+</body>
+</html>
